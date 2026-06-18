@@ -7,14 +7,53 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- ===================== Icon sprite (inline, zero external dependency) ===================== -->
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></symbol>
+
+    <symbol id="icon-theme-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+    <symbol id="icon-theme-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.6A9 9 0 1111.4 3a7.2 7.2 0 009.6 9.6z"/></symbol>
+    <symbol id="icon-theme-system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 000 18z" fill="currentColor" stroke="none"/></symbol>
+
+    <symbol id="icon-otp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.5c0 5-3.2 7.8-7 9.2-3.8-1.4-7-4.2-7-9.2V6l7-3z"/><path d="M9 12l2.2 2.2L15.5 9.5"/></symbol>
+    <symbol id="icon-password" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/><circle cx="12" cy="15.5" r="1.2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="icon-converter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13M14 4.5L17.5 8 14 11.5"/><path d="M20 16H7M10 12.5L6.5 16 10 19.5"/></symbol>
+    <symbol id="icon-splitter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.5" cy="9.5" r="2.3"/><path d="M15.3 14.2c2.4.4 4.2 2.4 4.5 5.3"/></symbol>
+    <symbol id="icon-debts" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3.5"/></symbol>
+    <symbol id="icon-calculators" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M7.5 5.5h9"/><circle cx="8" cy="11.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="12" cy="11.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="16" cy="11.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="8" cy="15" r="0.9" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="0.9" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="0.9" fill="currentColor" stroke="none"/><circle cx="8" cy="18.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="12" cy="18.5" r="0.9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="icon-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 14v3M14 19h3v2M19 19h2v2"/></symbol>
+    <symbol id="icon-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 9.5h16M4 14h10.5M4 18.5h7"/></symbol>
+    <symbol id="icon-datetime" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  </svg>
+
   <div id="app">
     <header class="app-header">
-      <h1>Toolkit</h1>
+      <button id="backBtn" class="icon-only-btn hidden" type="button" aria-label="Back">
+        <svg class="icon" width="22" height="22"><use href="#icon-back"></use></svg>
+      </button>
+      <h1 id="headerTitle">Toolkit</h1>
+      <button id="themeToggleBtn" class="icon-only-btn" type="button" aria-label="Toggle theme">
+        <svg class="icon" width="20" height="20"><use href="#icon-theme-system"></use></svg>
+      </button>
     </header>
 
     <main id="views">
+      <!-- ===================== Home dashboard ===================== -->
+      <section id="view-home" class="view active">
+        <p class="hint">Nine pure-logic tools. Everything runs on this device — the only network call anywhere is one optional currency-rate lookup.</p>
+
+        <h3>Security</h3>
+        <div class="home-grid" data-category="security"></div>
+
+        <h3>Money</h3>
+        <div class="home-grid" data-category="money"></div>
+
+        <h3>Utilities</h3>
+        <div class="home-grid" data-category="utilities"></div>
+      </section>
+
       <!-- ===================== OTP ===================== -->
-      <section id="view-otp" class="view active">
+      <section id="view-otp" class="view">
         <h2>Authenticator codes</h2>
         <p class="hint">Codes are generated locally on this device — nothing is ever sent anywhere.</p>
         <div id="otpList"></div>
@@ -126,6 +165,204 @@
         <div id="debtsList"></div>
       </section>
 
+      <!-- ===================== Password ===================== -->
+      <section id="view-password" class="view">
+        <h2>Passwords</h2>
+        <div class="subtabs">
+          <button class="subtab-btn active" data-target="subtab-pwd-generate">Generate</button>
+          <button class="subtab-btn" data-target="subtab-pwd-check">Check strength</button>
+        </div>
+
+        <div id="subtab-pwd-generate" class="subtab-panel active">
+          <div class="convert-row">
+            <input id="pwdOutput" type="text" readonly />
+            <button id="pwdCopyBtn" type="button" class="small-btn">Copy</button>
+          </div>
+          <div class="strength-meter"><div id="pwdMeterGen" class="strength-bar"></div></div>
+          <div id="pwdLabelGen" class="hint"></div>
+
+          <div class="field-label">Length: <span id="pwdLengthVal">16</span></div>
+          <input id="pwdLength" type="range" min="6" max="64" value="16" />
+
+          <div class="checkbox-list">
+            <label class="checkbox-row"><input id="pwdUpper" type="checkbox" checked /> A–Z</label>
+            <label class="checkbox-row"><input id="pwdLower" type="checkbox" checked /> a–z</label>
+            <label class="checkbox-row"><input id="pwdNumbers" type="checkbox" checked /> 0–9</label>
+            <label class="checkbox-row"><input id="pwdSymbols" type="checkbox" checked /> !@#$%</label>
+            <label class="checkbox-row"><input id="pwdExcludeAmbiguous" type="checkbox" /> Exclude 0/O, 1/l/I</label>
+          </div>
+          <button id="pwdGenerateBtn" type="button">Generate password</button>
+        </div>
+
+        <div id="subtab-pwd-check" class="subtab-panel">
+          <div class="convert-row">
+            <input id="pwdCheckInput" type="text" placeholder="Type a password to check" autocomplete="off" />
+            <button id="pwdShowToggle" type="button" class="small-btn">Show</button>
+          </div>
+          <div class="strength-meter"><div id="pwdMeterCheck" class="strength-bar"></div></div>
+          <div id="pwdLabelCheck" class="hint"></div>
+          <div id="pwdFeedback" class="hint"></div>
+        </div>
+      </section>
+
+      <!-- ===================== Calculators ===================== -->
+      <section id="view-calculators" class="view">
+        <h2>Calculators</h2>
+        <div class="subtabs">
+          <button class="subtab-btn active" data-target="subtab-calc-tip">Tip</button>
+          <button class="subtab-btn" data-target="subtab-calc-bmi">BMI</button>
+          <button class="subtab-btn" data-target="subtab-calc-loan">Loan/EMI</button>
+          <button class="subtab-btn" data-target="subtab-calc-pct">Percent</button>
+        </div>
+
+        <div id="subtab-calc-tip" class="subtab-panel active">
+          <input id="tipBill" type="number" inputmode="decimal" placeholder="Bill amount" />
+          <div class="field-label">Tip percent: <span id="tipPctVal">15</span>%</div>
+          <input id="tipPct" type="range" min="0" max="40" value="15" />
+          <div class="chips">
+            <button type="button" class="chip chip-btn" data-pct="10">10%</button>
+            <button type="button" class="chip chip-btn" data-pct="15">15%</button>
+            <button type="button" class="chip chip-btn" data-pct="18">18%</button>
+            <button type="button" class="chip chip-btn" data-pct="20">20%</button>
+            <button type="button" class="chip chip-btn" data-pct="25">25%</button>
+          </div>
+          <input id="tipPeople" type="number" inputmode="numeric" placeholder="Split between (people)" value="1" min="1" />
+          <div class="totals-box" id="tipResult"></div>
+        </div>
+
+        <div id="subtab-calc-bmi" class="subtab-panel">
+          <div class="subtabs">
+            <button type="button" class="subtab-btn active" id="bmiUnitMetric">Metric</button>
+            <button type="button" class="subtab-btn" id="bmiUnitImperial">Imperial</button>
+          </div>
+          <div id="bmiMetricFields">
+            <input id="bmiHeightCm" type="number" inputmode="decimal" placeholder="Height (cm)" />
+            <input id="bmiWeightKg" type="number" inputmode="decimal" placeholder="Weight (kg)" />
+          </div>
+          <div id="bmiImperialFields" class="hidden">
+            <div class="convert-row">
+              <input id="bmiHeightFt" type="number" inputmode="numeric" placeholder="ft" />
+              <input id="bmiHeightIn" type="number" inputmode="numeric" placeholder="in" />
+            </div>
+            <input id="bmiWeightLb" type="number" inputmode="decimal" placeholder="Weight (lb)" />
+          </div>
+          <div class="totals-box" id="bmiResult"></div>
+        </div>
+
+        <div id="subtab-calc-loan" class="subtab-panel">
+          <input id="loanPrincipal" type="number" inputmode="decimal" placeholder="Loan amount" />
+          <input id="loanRate" type="number" inputmode="decimal" placeholder="Annual interest rate %" />
+          <input id="loanTenure" type="number" inputmode="numeric" placeholder="Tenure (months)" />
+          <div class="totals-box" id="loanResult"></div>
+        </div>
+
+        <div id="subtab-calc-pct" class="subtab-panel">
+          <h3>X% of Y</h3>
+          <div class="convert-row">
+            <input id="pctOfX" type="number" inputmode="decimal" placeholder="X %" />
+            <input id="pctOfY" type="number" inputmode="decimal" placeholder="of Y" />
+          </div>
+          <div class="hint" id="pctOfResult"></div>
+
+          <h3>X is what % of Y</h3>
+          <div class="convert-row">
+            <input id="pctIsX" type="number" inputmode="decimal" placeholder="X" />
+            <input id="pctIsY" type="number" inputmode="decimal" placeholder="of Y" />
+          </div>
+          <div class="hint" id="pctIsResult"></div>
+
+          <h3>% change from X to Y</h3>
+          <div class="convert-row">
+            <input id="pctChgX" type="number" inputmode="decimal" placeholder="From X" />
+            <input id="pctChgY" type="number" inputmode="decimal" placeholder="To Y" />
+          </div>
+          <div class="hint" id="pctChgResult"></div>
+        </div>
+      </section>
+
+      <!-- ===================== Text tools ===================== -->
+      <section id="view-text" class="view">
+        <h2>Text tools</h2>
+        <div class="subtabs">
+          <button class="subtab-btn active" data-target="subtab-text-counter">Counter</button>
+          <button class="subtab-btn" data-target="subtab-text-case">Case</button>
+          <button class="subtab-btn" data-target="subtab-text-base64">Base64</button>
+          <button class="subtab-btn" data-target="subtab-text-hash">Hash</button>
+        </div>
+
+        <div id="subtab-text-counter" class="subtab-panel active">
+          <textarea id="counterInput" rows="6" placeholder="Type or paste text…"></textarea>
+          <div class="totals-box" id="counterResult"></div>
+        </div>
+
+        <div id="subtab-text-case" class="subtab-panel">
+          <textarea id="caseInput" rows="4" placeholder="Type or paste text…"></textarea>
+          <div class="chips">
+            <button type="button" class="chip chip-btn" data-case="upper">UPPERCASE</button>
+            <button type="button" class="chip chip-btn" data-case="lower">lowercase</button>
+            <button type="button" class="chip chip-btn" data-case="title">Title Case</button>
+            <button type="button" class="chip chip-btn" data-case="sentence">Sentence case</button>
+            <button type="button" class="chip chip-btn" data-case="camel">camelCase</button>
+            <button type="button" class="chip chip-btn" data-case="snake">snake_case</button>
+          </div>
+          <textarea id="caseOutput" rows="4" readonly placeholder="Result appears here…"></textarea>
+          <button id="caseCopyBtn" type="button" class="small-btn">Copy result</button>
+        </div>
+
+        <div id="subtab-text-base64" class="subtab-panel">
+          <div class="subtabs">
+            <button type="button" class="subtab-btn active" id="b64EncodeBtn">Encode</button>
+            <button type="button" class="subtab-btn" id="b64DecodeBtn">Decode</button>
+          </div>
+          <textarea id="b64Input" rows="4" placeholder="Type or paste text…"></textarea>
+          <textarea id="b64Output" rows="4" readonly placeholder="Result appears here…"></textarea>
+          <button id="b64CopyBtn" type="button" class="small-btn">Copy result</button>
+        </div>
+
+        <div id="subtab-text-hash" class="subtab-panel">
+          <textarea id="hashInput" rows="4" placeholder="Type or paste text…"></textarea>
+          <select id="hashAlgo">
+            <option value="SHA-1">SHA-1</option>
+            <option value="SHA-256" selected>SHA-256</option>
+            <option value="SHA-384">SHA-384</option>
+            <option value="SHA-512">SHA-512</option>
+          </select>
+          <textarea id="hashOutput" rows="3" readonly placeholder="Hash appears here…"></textarea>
+          <button id="hashCopyBtn" type="button" class="small-btn">Copy hash</button>
+        </div>
+      </section>
+
+      <!-- ===================== Date & time ===================== -->
+      <section id="view-datetime" class="view">
+        <h2>Date &amp; time</h2>
+        <div class="subtabs">
+          <button class="subtab-btn active" data-target="subtab-dt-age">Age</button>
+          <button class="subtab-btn" data-target="subtab-dt-diff">Date diff</button>
+          <button class="subtab-btn" data-target="subtab-dt-countdown">Countdown</button>
+        </div>
+
+        <div id="subtab-dt-age" class="subtab-panel active">
+          <input id="ageBirthDate" type="date" />
+          <div class="totals-box" id="ageResult"></div>
+        </div>
+
+        <div id="subtab-dt-diff" class="subtab-panel">
+          <input id="diffFrom" type="date" />
+          <input id="diffTo" type="date" />
+          <div class="totals-box" id="diffResult"></div>
+        </div>
+
+        <div id="subtab-dt-countdown" class="subtab-panel">
+          <input id="countdownTarget" type="datetime-local" />
+          <input id="countdownLabel" type="text" placeholder="What's it counting down to? (optional)" />
+          <div class="row-actions">
+            <button id="countdownSetBtn" type="button" class="small-btn">Set</button>
+            <button id="countdownClearBtn" type="button" class="icon-btn danger">Clear</button>
+          </div>
+          <div class="totals-box" id="countdownResult"></div>
+        </div>
+      </section>
+
       <!-- ===================== QR ===================== -->
       <section id="view-qr" class="view">
         <h2>QR generator</h2>
@@ -137,14 +374,6 @@
         <button id="qrDownloadBtn" type="button">Download PNG</button>
       </section>
     </main>
-
-    <nav class="tabbar">
-      <button class="tab-btn active" data-view="view-otp" type="button">🔐<span>OTP</span></button>
-      <button class="tab-btn" data-view="view-converter" type="button">🔁<span>Convert</span></button>
-      <button class="tab-btn" data-view="view-splitter" type="button">🧾<span>Split</span></button>
-      <button class="tab-btn" data-view="view-debts" type="button">📒<span>Debts</span></button>
-      <button class="tab-btn" data-view="view-qr" type="button">▦<span>QR</span></button>
-    </nav>
   </div>
 
   <!-- Telegram WebApp SDK (loads instantly; app degrades gracefully if absent, e.g. in a plain browser tab) -->
@@ -161,9 +390,13 @@
   <script src="js/converter.js"></script>
   <script src="js/splitter.js"></script>
   <script src="js/debts.js"></script>
+  <script src="js/password.js"></script>
+  <script src="js/calculators.js"></script>
+  <script src="js/text-tools.js"></script>
+  <script src="js/datetime.js"></script>
   <script src="js/qrcode-tool.js"></script>
 
-  <!-- App shell: tab navigation + bootstrapping -->
+  <!-- App shell: home dashboard, navigation, theme toggle, bootstrapping -->
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,28 +1,42 @@
 # Toolkit — Telegram Mini App
 
-A single Telegram Mini App bundling five pure-logic utilities: OTP authenticator codes, a unit/currency converter, a group expense splitter, a personal debt tracker, and a QR code generator.
+A single Telegram Mini App bundling nine pure-logic utilities, organized behind a home dashboard:
+
+- **Security** — OTP authenticator codes, password generator + strength checker
+- **Money** — unit/currency converter, group expense splitter, personal debt tracker, calculators (tip, BMI, loan/EMI, percentage)
+- **Utilities** — text tools (counter, case converter, Base64, hash generator), date & time tools (age, date difference, countdown timer), QR code generator
 
 **Architecture: zero backend, zero build step, zero ongoing maintenance.**
 
 - Static HTML/CSS/JS only — no server, no database, no API keys (except one optional free FX endpoint, see below).
 - All data is stored on-device via Telegram `CloudStorage` (syncs across the user's own devices) with a `localStorage` fallback so it also works in a plain browser tab.
-- The only network call the app ever makes is to `api.frankfurter.dev` for live currency rates, and it caches results for 12 hours with an offline-safe fallback to the last known rates. Everything else (OTP/TOTP math, unit conversion, splitting, debt tracking, QR rendering) runs 100% client-side with no external dependency.
+- The only network call the app ever makes is to `api.frankfurter.dev` for live currency rates, and it caches results for 12 hours with an offline-safe fallback to the last known rates. Everything else (OTP/TOTP math, unit conversion, splitting, debt tracking, password generation/strength, calculators, text tools, date/time math, QR rendering) runs 100% client-side with no external dependency.
 - Nothing to patch, nothing to scale, nothing to monitor. Once deployed to static hosting, it keeps working indefinitely.
+
+## UI
+
+- **Home dashboard** — all 9 tools shown as cards grouped by category (Security / Money / Utilities) instead of a flat tab bar. Tap a card to open the tool; the back arrow in the header returns home.
+- **Theme toggle** — the header button cycles Light → Dark → System. "System" follows Telegram's own theme (or the OS preference when running in a plain browser tab).
+- **Icons** — a small inline SVG sprite in `index.html`, no icon font or CDN dependency.
 
 ## Project structure
 
 ```
 telegram-toolkit-miniapp/
-├── index.html              # app shell, tab navigation, loads everything
+├── index.html              # app shell: icon sprite, header, home dashboard, all 9 tool views
 ├── css/style.css            # all styling, theme-adaptive via Telegram CSS vars
 ├── js/
-│   ├── telegram-integration.js   # Telegram WebApp SDK wrapper (storage, haptics, theme)
+│   ├── telegram-integration.js   # Telegram WebApp SDK wrapper (storage, haptics, theme override)
 │   ├── otp.js                    # TOTP/RFC 6238 authenticator codes
+│   ├── password.js               # password generator (crypto.getRandomValues) + strength checker
 │   ├── converter.js              # unit converter + currency converter
 │   ├── splitter.js                # group expense splitter (Splitwise-style)
 │   ├── debts.js                   # personal IOU tracker
+│   ├── calculators.js             # tip / BMI / loan-EMI / percentage calculators
+│   ├── text-tools.js              # counter, case converter, Base64, hash generator
+│   ├── datetime.js                # age calculator, date difference, countdown timer
 │   ├── qrcode-tool.js             # QR code generator (canvas + PNG export)
-│   └── app.js                     # boots everything, tab switching
+│   └── app.js                     # boots everything: home-dashboard cards, navigation, theme toggle
 └── vendor/
     ├── qrcode.min.js          # vendored, locally-bundled QR library (MIT)
     └── qrcode.LICENSE.txt

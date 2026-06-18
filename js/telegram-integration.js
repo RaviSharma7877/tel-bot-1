@@ -6,12 +6,17 @@
  * browser tab (useful for local development/testing).
  *
  * Provides:
- *   - TG.init()              -> call once on load
+ *   - TG.init()              -> call once on load, returns a Promise that
+ *                              resolves once the saved theme mode is loaded
+ *                              and applied (await it before reading theme.get())
  *   - TG.storage.get(key)    -> Promise<string|null>
  *   - TG.storage.set(key,v)  -> Promise<void>
  *   - TG.storage.remove(key) -> Promise<void>
  *   - TG.haptic(style)       -> best-effort haptic feedback, no-op if unavailable
  *   - TG.showAlert(msg)      -> Telegram-native alert, falls back to window.alert
+ *   - TG.theme.get()         -> 'light' | 'dark' | 'system' (current override mode)
+ *   - TG.theme.cycle()       -> advances light -> dark -> system -> light, persists choice
+ *   - TG.theme.apply()       -> re-applies CSS vars for the current mode (call after cycle)
  */
 (function (global) {
   'use strict';
@@ -19,24 +24,82 @@
   const tg = global.Telegram && global.Telegram.WebApp ? global.Telegram.WebApp : null;
   const hasCloudStorage = !!(tg && tg.CloudStorage && typeof tg.CloudStorage.setItem === 'function');
 
+  const LIGHT_VARS = {
+    '--tg-bg-color': '#ffffff',
+    '--tg-text-color': '#1c1c1e',
+    '--tg-hint-color': '#8e8e93',
+    '--tg-link-color': '#2678b6',
+    '--tg-button-color': '#2678b6',
+    '--tg-button-text-color': '#ffffff',
+    '--tg-secondary-bg-color': '#f0f0f3',
+    '--tg-section-bg-color': '#ffffff',
+    '--tg-destructive-text-color': '#e53935'
+  };
+  const DARK_VARS = {
+    '--tg-bg-color': '#17181c',
+    '--tg-text-color': '#f0f0f2',
+    '--tg-hint-color': '#8d8d93',
+    '--tg-link-color': '#5eb0ed',
+    '--tg-button-color': '#3b8fd4',
+    '--tg-button-text-color': '#ffffff',
+    '--tg-secondary-bg-color': '#222329',
+    '--tg-section-bg-color': '#1e1f25',
+    '--tg-destructive-text-color': '#ff6b6b'
+  };
+
+  const THEME_KEY = 'theme_override_v1';
+  let themeMode = 'system'; // 'light' | 'dark' | 'system'
+
   function applyThemeVars() {
     const root = document.documentElement;
-    const theme = (tg && tg.themeParams) || {};
+    let vars, scheme;
 
-    const map = {
-      '--tg-bg-color': theme.bg_color || '#ffffff',
-      '--tg-text-color': theme.text_color || '#222222',
-      '--tg-hint-color': theme.hint_color || '#999999',
-      '--tg-link-color': theme.link_color || '#2678b6',
-      '--tg-button-color': theme.button_color || '#2678b6',
-      '--tg-button-text-color': theme.button_text_color || '#ffffff',
-      '--tg-secondary-bg-color': theme.secondary_bg_color || '#f0f0f0',
-      '--tg-section-bg-color': theme.section_bg_color || '#ffffff',
-      '--tg-destructive-text-color': theme.destructive_text_color || '#e53935'
-    };
+    if (themeMode === 'system') {
+      const tgTheme = (tg && tg.themeParams) || {};
+      const hasTgTheme = Object.keys(tgTheme).length > 0;
+      if (hasTgTheme) {
+        vars = {
+          '--tg-bg-color': tgTheme.bg_color || LIGHT_VARS['--tg-bg-color'],
+          '--tg-text-color': tgTheme.text_color || LIGHT_VARS['--tg-text-color'],
+          '--tg-hint-color': tgTheme.hint_color || LIGHT_VARS['--tg-hint-color'],
+          '--tg-link-color': tgTheme.link_color || LIGHT_VARS['--tg-link-color'],
+          '--tg-button-color': tgTheme.button_color || LIGHT_VARS['--tg-button-color'],
+          '--tg-button-text-color': tgTheme.button_text_color || LIGHT_VARS['--tg-button-text-color'],
+          '--tg-secondary-bg-color': tgTheme.secondary_bg_color || LIGHT_VARS['--tg-secondary-bg-color'],
+          '--tg-section-bg-color': tgTheme.section_bg_color || LIGHT_VARS['--tg-section-bg-color'],
+          '--tg-destructive-text-color': tgTheme.destructive_text_color || LIGHT_VARS['--tg-destructive-text-color']
+        };
+        scheme = (tg && tg.colorScheme) || 'light';
+      } else {
+        const prefersDark = global.matchMedia && global.matchMedia('(prefers-color-scheme: dark)').matches;
+        vars = prefersDark ? DARK_VARS : LIGHT_VARS;
+        scheme = prefersDark ? 'dark' : 'light';
+      }
+    } else if (themeMode === 'dark') {
+      vars = DARK_VARS;
+      scheme = 'dark';
+    } else {
+      vars = LIGHT_VARS;
+      scheme = 'light';
+    }
 
-    Object.keys(map).forEach((k) => root.style.setProperty(k, map[k]));
-    root.setAttribute('data-color-scheme', (tg && tg.colorScheme) || 'light');
+    Object.keys(vars).forEach((k) => root.style.setProperty(k, vars[k]));
+    root.setAttribute('data-color-scheme', scheme);
+    root.setAttribute('data-theme-mode', themeMode);
+  }
+
+  async function loadThemeMode() {
+    try {
+      const raw = await storage.get(THEME_KEY);
+      if (raw === 'light' || raw === 'dark' || raw === 'system') themeMode = raw;
+    } catch (e) {}
+  }
+
+  function cycleTheme() {
+    themeMode = themeMode === 'light' ? 'dark' : themeMode === 'dark' ? 'system' : 'light';
+    storage.set(THEME_KEY, themeMode);
+    applyThemeVars();
+    return themeMode;
   }
 
   function init() {
@@ -46,7 +109,8 @@
       try { tg.setHeaderColor && tg.setHeaderColor('secondary_bg_color'); } catch (e) {}
       try { tg.onEvent && tg.onEvent('themeChanged', applyThemeVars); } catch (e) {}
     }
-    applyThemeVars();
+    // Returned so callers can await theme-mode load before reading TG.theme.get().
+    return loadThemeMode().then(applyThemeVars);
   }
 
   // ---- Storage: Telegram CloudStorage when available, localStorage otherwise ----
@@ -120,5 +184,11 @@
     }
   }
 
-  global.TG = { raw: tg, init, storage, haptic, showAlert, hasCloudStorage };
+  const theme = {
+    get: () => themeMode,
+    cycle: cycleTheme,
+    apply: applyThemeVars
+  };
+
+  global.TG = { raw: tg, init, storage, haptic, showAlert, hasCloudStorage, theme };
 })(window);
