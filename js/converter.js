@@ -1,8 +1,8 @@
 /**
  * converter.js — unit converter (100% pure math, zero dependency) plus a
  * currency converter that uses one small free, no-key FX API
- * (frankfurter.app, backed by European Central Bank reference rates) with a
- * cached fallback so it still works offline using the last known rates.
+ * (api.frankfurter.dev, backed by European Central Bank reference rates) with
+ * a cached fallback so it still works offline using the last known rates.
  */
 (function () {
   'use strict';
@@ -85,7 +85,7 @@
   }
 
   async function fetchFreshRates() {
-    const res = await fetch('https://api.frankfurter.app/latest?from=USD');
+    const res = await fetch('https://api.frankfurter.dev/v1/latest?from=USD');
     if (!res.ok) throw new Error('FX request failed: ' + res.status);
     const data = await res.json();
     const rates = Object.assign({ USD: 1 }, data.rates);

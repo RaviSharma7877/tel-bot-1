@@ -6,7 +6,7 @@ A single Telegram Mini App bundling five pure-logic utilities: OTP authenticator
 
 - Static HTML/CSS/JS only — no server, no database, no API keys (except one optional free FX endpoint, see below).
 - All data is stored on-device via Telegram `CloudStorage` (syncs across the user's own devices) with a `localStorage` fallback so it also works in a plain browser tab.
-- The only network call the app ever makes is to `api.frankfurter.app` for live currency rates, and it caches results for 12 hours with an offline-safe fallback to the last known rates. Everything else (OTP/TOTP math, unit conversion, splitting, debt tracking, QR rendering) runs 100% client-side with no external dependency.
+- The only network call the app ever makes is to `api.frankfurter.dev` for live currency rates, and it caches results for 12 hours with an offline-safe fallback to the last known rates. Everything else (OTP/TOTP math, unit conversion, splitting, debt tracking, QR rendering) runs 100% client-side with no external dependency.
 - Nothing to patch, nothing to scale, nothing to monitor. Once deployed to static hosting, it keeps working indefinitely.
 
 ## Project structure
@@ -93,4 +93,6 @@ Any time you want to change something: edit the files, commit, push. Static host
 
 ## Notes on the currency converter
 
-The unit converter, OTP, splitter, and debt tracker have **zero** external dependencies. The currency converter is the one deliberate exception — live FX rates can't be computed locally, so it calls the free, keyless `frankfurter.app` API (backed by European Central Bank reference rates) and caches the result. If that API ever goes down or the user is offline, the app keeps using the last cached rates instead of breaking.
+The unit converter, OTP, splitter, and debt tracker have **zero** external dependencies. The currency converter is the one deliberate exception — live FX rates can't be computed locally, so it calls the free, keyless `api.frankfurter.dev` API (backed by European Central Bank reference rates) and caches the result. If that API ever goes down or the user is offline, the app keeps using the last cached rates instead of breaking.
+
+> Note: the older `api.frankfurter.app` domain now redirects to `api.frankfurter.dev`, and some browsers block that cross-origin redirect as a CORS error. The app calls the new domain directly to avoid this.
