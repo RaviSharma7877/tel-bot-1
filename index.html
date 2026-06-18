@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Toolkit</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <h1>Toolkit</h1>
+    </header>
+
+    <main id="views">
+      <!-- ===================== OTP ===================== -->
+      <section id="view-otp" class="view active">
+        <h2>Authenticator codes</h2>
+        <p class="hint">Codes are generated locally on this device — nothing is ever sent anywhere.</p>
+        <div id="otpList"></div>
+        <div id="otpEmpty" class="hint">No accounts yet — add one below.</div>
+        <h3>Add account</h3>
+        <form id="otpAddForm" class="stack-form">
+          <input id="otpLabel" type="text" placeholder="Account name (e.g. GitHub)" required />
+          <input id="otpSecret" type="text" placeholder="Secret key (Base32)" required autocapitalize="characters" autocomplete="off" />
+          <button type="submit">Add account</button>
+        </form>
+      </section>
+
+      <!-- ===================== Converter ===================== -->
+      <section id="view-converter" class="view">
+        <h2>Converter</h2>
+        <div class="subtabs">
+          <button class="subtab-btn active" data-target="subtab-units">Units</button>
+          <button class="subtab-btn" data-target="subtab-currency">Currency</button>
+        </div>
+
+        <div id="subtab-units" class="subtab-panel active">
+          <select id="unitCategory"></select>
+          <div class="convert-row">
+            <input id="unitInput" type="number" inputmode="decimal" />
+            <select id="unitFrom"></select>
+          </div>
+          <button id="unitSwap" class="swap-btn" type="button">⇅ swap</button>
+          <div class="convert-row">
+            <input id="unitOutput" type="text" readonly />
+            <select id="unitTo"></select>
+          </div>
+        </div>
+
+        <div id="subtab-currency" class="subtab-panel">
+          <div class="convert-row">
+            <input id="fxAmount" type="number" inputmode="decimal" />
+            <select id="fxFrom"></select>
+          </div>
+          <button id="fxSwap" class="swap-btn" type="button">⇅ swap</button>
+          <div class="convert-row">
+            <input id="fxOutput" type="text" readonly />
+            <select id="fxTo"></select>
+          </div>
+          <div class="row-actions">
+            <span id="fxStatus" class="hint"></span>
+            <button id="fxRefresh" type="button" class="small-btn">Refresh rates</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Splitter ===================== -->
+      <section id="view-splitter" class="view">
+        <h2>Split expenses</h2>
+        <div class="row-actions">
+          <select id="splitterGroupSelect"></select>
+          <button id="splitterNewGroupToggle" type="button" class="small-btn">+ New group</button>
+        </div>
+        <form id="splitterNewGroupForm" class="inline-form hidden">
+          <input id="splitterNewGroupName" type="text" placeholder="Group name" />
+          <button type="submit">Create</button>
+        </form>
+
+        <h3>Members</h3>
+        <div id="splitterMembersList" class="chips"></div>
+        <form id="splitterAddMemberForm" class="inline-form">
+          <input id="splitterMemberName" type="text" placeholder="Add person" />
+          <button type="submit">Add</button>
+        </form>
+
+        <h3>Add expense</h3>
+        <form id="splitterExpenseForm" class="stack-form">
+          <input id="splitterDesc" type="text" placeholder="Description (e.g. Dinner)" />
+          <input id="splitterAmount" type="number" inputmode="decimal" placeholder="Amount" required />
+          <div class="field-label">Paid by</div>
+          <select id="splitterPaidBy"></select>
+          <div class="field-label">Split among</div>
+          <div id="splitterSplitAmongBox" class="checkbox-list"></div>
+          <button type="submit">Add expense</button>
+        </form>
+
+        <h3>Expenses</h3>
+        <div id="splitterExpenseList"></div>
+
+        <h3>Balances</h3>
+        <div id="splitterBalances"></div>
+
+        <h3>Settle up</h3>
+        <div id="splitterSettlements"></div>
+      </section>
+
+      <!-- ===================== Debts ===================== -->
+      <section id="view-debts" class="view">
+        <h2>Debt tracker</h2>
+        <div id="debtsTotals" class="totals-box"></div>
+
+        <h3>Add entry</h3>
+        <form id="debtsForm" class="stack-form">
+          <input id="debtsPerson" type="text" placeholder="Person" required />
+          <input id="debtsAmount" type="number" inputmode="decimal" placeholder="Amount" required />
+          <select id="debtsDirection">
+            <option value="owed_to_me">They owe me</option>
+            <option value="i_owe">I owe them</option>
+          </select>
+          <input id="debtsNote" type="text" placeholder="Note (optional)" />
+          <button type="submit">Add</button>
+        </form>
+
+        <h3>All entries</h3>
+        <div id="debtsList"></div>
+      </section>
+
+      <!-- ===================== QR ===================== -->
+      <section id="view-qr" class="view">
+        <h2>QR generator</h2>
+        <textarea id="qrInput" rows="3" placeholder="Type or paste text, a URL, Wi-Fi info, anything…"></textarea>
+        <div class="qr-canvas-wrap">
+          <canvas id="qrCanvas" width="280" height="280"></canvas>
+          <div id="qrHint" class="hint">Start typing to generate a QR code.</div>
+        </div>
+        <button id="qrDownloadBtn" type="button">Download PNG</button>
+      </section>
+    </main>
+
+    <nav class="tabbar">
+      <button class="tab-btn active" data-view="view-otp" type="button">🔐<span>OTP</span></button>
+      <button class="tab-btn" data-view="view-converter" type="button">🔁<span>Convert</span></button>
+      <button class="tab-btn" data-view="view-splitter" type="button">🧾<span>Split</span></button>
+      <button class="tab-btn" data-view="view-debts" type="button">📒<span>Debts</span></button>
+      <button class="tab-btn" data-view="view-qr" type="button">▦<span>QR</span></button>
+    </nav>
+  </div>
+
+  <!-- Telegram WebApp SDK (loads instantly; app degrades gracefully if absent, e.g. in a plain browser tab) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Integration layer -->
+  <script src="js/telegram-integration.js"></script>
+
+  <!-- Vendored QR library (offline, no CDN/runtime network dependency) -->
+  <script src="vendor/qrcode.min.js"></script>
+
+  <!-- Tool modules -->
+  <script src="js/otp.js"></script>
+  <script src="js/converter.js"></script>
+  <script src="js/splitter.js"></script>
+  <script src="js/debts.js"></script>
+  <script src="js/qrcode-tool.js"></script>
+
+  <!-- App shell: tab navigation + bootstrapping -->
+  <script src="js/app.js"></script>
+</body>
+</html>
